@@ -9,5 +9,5 @@ if [[ -z $fileServicePrimaryEndpoint ]]; then
     exit 1
 fi
 
-echo $fileServicePrimaryEndpoint > /root/test-script-log.txt
-echo "Tony Halik: Tu bylem!" >> /root/test-script-log.txt
+echo $fileServicePrimaryEndpoint > $HOME/test-script-log.txt
+echo "Tony Halik: Tu bylem!" >> $HOME/test-script-log.txt
