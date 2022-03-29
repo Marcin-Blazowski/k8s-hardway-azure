@@ -13,8 +13,9 @@ apt-get -y update
 
 # install cifs-utils and mount file share
 apt-get install cifs-utils
-mkdir $4
-mount -t cifs //$1.file.$6/$3 $4 -o vers=3.0,username=$1,password=$2,dir_mode=0755,file_mode=0664
+mkdir -p $4
+echo "mount -t cifs //$1.file.$6/$3 $4 -o vers=3.0,username=$1,password=$2,dir_mode=0755,file_mode=0664" >> /tmp/azure-mount-log.txt
+mount -t cifs //$1.file.$6/$3 $4 -o vers=3.0,username=$1,password=$2,dir_mode=0755,file_mode=0664 >> /tmp/azure-mount-log.txt
 
 # create a symlink from /mountpath/xxx to ~username/xxx
 linkpoint=`echo $4 | sed 's/.*\///'`
