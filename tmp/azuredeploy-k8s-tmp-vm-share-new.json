@@ -194,21 +194,23 @@
     },
     "_artifactsLocation": {
       "type": "string",
+      // "[deployment().properties.templateLink.uri]",
       "defaultValue": "https://raw.githubusercontent.com/Marcin-Blazowski/k8s-hardway-azure/main/azure/ubuntu/azure/",
       "metadata": {
         "description": "Specifies the base URI where artifacts required by this template are located including a trailing '/'"
       }
     },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "defaultValue": "",
+    "gitHubRepoLocation": {
+      "type": "string",
+      // "[deployment().properties.templateLink.uri]",
+      "defaultValue": "https://github.com/Marcin-Blazowski/k8s-hardway-azure",
       "metadata": {
-        "description": "Specifies the sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated. Use the defaultValue if the staging location is not secured."
+        "description": "Specifies the base URI to the GitHub repo with deployemnt scripts.'"
       }
     },
     "hostsScriptFileName": {
       "type": "string",
-      "defaultValue": "type-blazo-txt.sh",
+      "defaultValue": "generate-hosts-azure.sh",
       "metadata": {
         "description": "Specifies the script to download from the URI specified by the _artifactsLocation parameter."
       }
@@ -216,6 +218,13 @@
     "mntScriptFileName": {
       "type": "string",
       "defaultValue": "mount-azure-fileshare.sh",
+      "metadata": {
+        "description": "Specifies the script to download from the URI specified by the _artifactsLocation parameter."
+      }
+    },
+    "cloneGitScriptFileName": {
+      "type": "string",
+      "defaultValue": "clone-git-repo.sh",
       "metadata": {
         "description": "Specifies the script to download from the URI specified by the _artifactsLocation parameter."
       }
@@ -282,6 +291,7 @@
     //"MasterVmId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('MasterVmName'))]",
     "hostsScriptFileUri": "[uri(parameters('_artifactsLocation'), parameters('hostsScriptFileName'))]",
     "mntScriptFileUri": "[uri(parameters('_artifactsLocation'), parameters('mntScriptFileName'))]",
+    "cloneGitScriptFileUri": "[uri(parameters('_artifactsLocation'), parameters('cloneGitScriptFileName'))]",
     "linuxConfiguration": {
       "disablePasswordAuthentication": true,
       "ssh": {
@@ -379,12 +389,13 @@
           "fileUris": [
             //"[uri(parameters('_artifactsLocation'), concat('scripts/mount-azure-fileshare.sh', parameters('_artifactsLocationSasToken')))]",
             "[variables('mntScriptFileUri')]",
-            "[variables('hostsScriptFileUri')]"
+            "[variables('hostsScriptFileUri')]",
+            "[variables('cloneGitScriptFileUri')]"
           ]
         },
         "protectedSettings": {
-          //"commandToExecute": "[concat('bash ', parameters('hostsScriptFileName'), ' ', variables('fileServicePrimaryEndpoint'))]"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'))]"
+          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; clone-git-repo.sh <repo_link>"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7} {8}; bash {9} {10}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'))]"
         }
       }
     },
@@ -474,7 +485,8 @@
         },
         "protectedSettings": {
           //"commandToExecute": "[concat('bash ', parameters('hostsScriptFileName'), ' ', variables('fileServicePrimaryEndpoint'))]"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'))]"
+          //"commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'))]"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7} {8}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0')]"
         }
       }
     },
@@ -555,7 +567,8 @@
         },
         "protectedSettings": {
           //"commandToExecute": "[concat('bash ', parameters('hostsScriptFileName'), ' ', variables('fileServicePrimaryEndpoint'))]"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'))]"
+          //"commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'))]"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7} {8}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0')]"
         }
       }
     },
