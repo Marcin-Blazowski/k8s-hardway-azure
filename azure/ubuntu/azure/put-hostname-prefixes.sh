@@ -3,7 +3,6 @@ MasterPrefix=$1
 WorkerPrefix=$2
 # mkdir -p /mnt/k8s-share
 cd /mnt/k8s-share
-echo $HOSTNAME $uri >> /mnt/k8s-share/k8s-hostname-prefixes.txt
 # if this is master-1 VM
 if [ "$HOSTNAME" == "master-1" ]
 then

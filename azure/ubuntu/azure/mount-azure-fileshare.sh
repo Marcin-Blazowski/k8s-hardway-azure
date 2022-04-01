@@ -13,7 +13,7 @@ apt-get -y update
 apt-get install cifs-utils
 
 # set mount point path and create folder if missing
-mountPointPath = /mnt/k8s-share
+mountPointPath=/mnt/k8s-share
 mkdir -p $mountPointPath
 
 echo "mount -t cifs //$1.file.$4/$3 $mountPointPath -o vers=3.0,username=$1,password=$2,dir_mode=0755,file_mode=0664" >> /tmp/azure-mount-log.txt
