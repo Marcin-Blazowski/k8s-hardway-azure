@@ -142,10 +142,10 @@
         "description": "Specifies the name of the administrator account of the virtual machine."
       }
     },
-    "adminPasswordOrKey": {
+    "adminSshPublicKey": {
       "type": "securestring",
       "metadata": {
-        "description": "Specifies the SSH Key or password for the virtual machine. SSH key is recommended."
+        "description": "Specifies the SSH Public Key of the admin user."
       }
     },
     "diskStorageAccounType": {
@@ -162,34 +162,11 @@
         "description": "Specifies the storage account type for OS and data disk."
       }
     },
-    "numDataDisks": {
-      "type": "int",
-      "defaultValue": 1,
-      "minValue": 0,
-      "maxValue": 64,
-      "metadata": {
-        "description": "Specifies the number of data disks of the virtual machine."
-      }
-    },
     "osDiskSize": {
       "type": "int",
       "defaultValue": 30,
       "metadata": {
         "description": "Specifies the size in GB of the OS disk of the VM."
-      }
-    },
-    "dataDiskSize": {
-      "type": "int",
-      "defaultValue": 5,
-      "metadata": {
-        "description": "Specifies the size in GB of the OS disk of the virtual machine."
-      }
-    },
-    "dataDiskCaching": {
-      "type": "string",
-      "defaultValue": "ReadWrite",
-      "metadata": {
-        "description": "Specifies the caching requirements for the data disks."
       }
     },
     "_artifactsLocation": {
@@ -292,13 +269,14 @@
     "hostsScriptFileUri": "[uri(parameters('_artifactsLocation'), parameters('hostsScriptFileName'))]",
     "mntScriptFileUri": "[uri(parameters('_artifactsLocation'), parameters('mntScriptFileName'))]",
     "cloneGitScriptFileUri": "[uri(parameters('_artifactsLocation'), parameters('cloneGitScriptFileName'))]",
+    "putPrefixesScriptFileUri": "[uri(parameters('_artifactsLocation'), 'put-hostname-prefixes.sh')]",
     "linuxConfiguration": {
       "disablePasswordAuthentication": true,
       "ssh": {
         "publicKeys": [
           {
             "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-            "keyData": "[parameters('adminPasswordOrKey')]"
+            "keyData": "[parameters('adminSshPublicKey')]"
           }
         ]
       },
@@ -316,20 +294,20 @@
         "name": "masterVmLoop",
         "count": "[parameters('numberOfMasterNodes')]"
       },
-      "name": "[concat(parameters('MasterVmName'), copyIndex('masterVmLoop'))]",
+      "name": "[concat(parameters('MasterVmName'), copyIndex('masterVmLoop',1))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         //"[variables('nicId')]"
-        "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicMasterName'), copyindex('masterVmLoop')))]"
+        "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicMasterName'), copyIndex('masterVmLoop',1)))]"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[concat(parameters('MasterVmOsNamePrefix'), copyIndex('masterVmLoop'))]",
+          "computerName": "[concat(parameters('MasterVmOsNamePrefix'), copyIndex('masterVmLoop',1))]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "adminPassword": "[parameters('adminSshPublicKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
         },
         "storageProfile": {
@@ -340,7 +318,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('MasterVmName'), copyIndex('masterVmLoop'), '_OSDisk')]",
+            "name": "[concat(parameters('MasterVmName'), copyIndex('masterVmLoop',1), '_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage",
             "diskSizeGB": "[parameters('osDiskSize')]",
@@ -352,8 +330,8 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicMasterName'), copyindex('masterVmLoop')))]"
-              //"id": "[resourceId('Microsoft.Network/networkInterfaces', concat('nic', copyindex()))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicMasterName'), copyIndex('masterVmLoop',1)))]"
+              //"id": "[resourceId('Microsoft.Network/networkInterfaces', concat('nic', copyIndex()))]"
             }
           ]
         },
@@ -364,11 +342,11 @@
         }
       }
     },
-    // Custom installation scripts for Master Nodes
+    // Custom pre-installation scripts for Master Nodes
     {
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('MasterVmName'), copyIndex('CustExtLoop'), '/', variables('customScriptExtensionName'))]",
+      "name": "[concat(parameters('MasterVmName'), copyIndex('CustExtLoop',1), '/', variables('customScriptExtensionName'))]",
       "copy": {
         "name": "CustExtLoop",
         "count": "[parameters('numberOfMasterNodes')]"
@@ -376,7 +354,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         //"[variables('MasterVmId')]"
-        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('MasterVmName'), copyIndex('CustExtLoop')))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('MasterVmName'), copyIndex('CustExtLoop',1)))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -390,12 +368,13 @@
             //"[uri(parameters('_artifactsLocation'), concat('scripts/mount-azure-fileshare.sh', parameters('_artifactsLocationSasToken')))]",
             "[variables('mntScriptFileUri')]",
             "[variables('hostsScriptFileUri')]",
-            "[variables('cloneGitScriptFileUri')]"
+            "[variables('cloneGitScriptFileUri')]",
+            "[variables('putPrefixesScriptFileUri')]"
           ]
         },
         "protectedSettings": {
-          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; clone-git-repo.sh <repo_link>"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7} {8}; bash {9} {10}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'))]"
+          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; clone-git-repo.sh <repo_link>; put-nodes-prefixes.sh <master-prefix worker-prefix>"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}; bash {7} {8}; bash {9} {10} {11}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'), 'put-hostname-prefixes.sh', parameters('MasterVmOsNamePrefix'), parameters('WorkerVmOsNamePrefix'))]"
         }
       }
     },
@@ -407,20 +386,20 @@
         "name": "workerVmLoop",
         "count": "[parameters('numberOfWorkerNodes')]"
       },
-      "name": "[concat(parameters('WorkerVmName'), copyIndex('workerVmLoop'))]",
+      "name": "[concat(parameters('WorkerVmName'), copyIndex('workerVmLoop',1))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         //"[variables('nicId')]"
-        "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicWorkerName'), copyindex('workerVmLoop')))]"
+        "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicWorkerName'), copyIndex('workerVmLoop',1)))]"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[concat(parameters('WorkerVmOsNamePrefix'), copyIndex('workerVmLoop'))]",
+          "computerName": "[concat(parameters('WorkerVmOsNamePrefix'), copyIndex('workerVmLoop',1))]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "adminPassword": "[parameters('adminSshPublicKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
         },
         "storageProfile": {
@@ -431,7 +410,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('WorkerVmName'), copyIndex('workerVmLoop'), '_OSDisk')]",
+            "name": "[concat(parameters('WorkerVmName'), copyIndex('workerVmLoop',1), '_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage",
             "diskSizeGB": "[parameters('osDiskSize')]",
@@ -443,8 +422,8 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicWorkerName'), copyindex('workerVmLoop')))]"
-              //"id": "[resourceId('Microsoft.Network/networkInterfaces', concat('nic', copyindex()))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicWorkerName'), copyIndex('workerVmLoop',1)))]"
+              //"id": "[resourceId('Microsoft.Network/networkInterfaces', concat('nic', copyIndex()))]"
             }
           ]
         },
@@ -455,11 +434,11 @@
         }
       }
     },
-    // Custom installation scripts for Worker Nodes
+    // Custom pre-installation scripts for Worker Nodes
     {
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker'), '/', variables('customScriptExtensionName'))]",
+      "name": "[concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker',1), '/', variables('customScriptExtensionName'))]",
       "copy": {
         "name": "CustExtLoopWorker",
         "count": "[parameters('numberOfWorkerNodes')]"
@@ -467,7 +446,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         //"[variables('MasterVmId')]"
-        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker')))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker',1)))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -484,9 +463,8 @@
           ]
         },
         "protectedSettings": {
-          //"commandToExecute": "[concat('bash ', parameters('hostsScriptFileName'), ' ', variables('fileServicePrimaryEndpoint'))]"
-          //"commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'))]"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7} {8}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0')]"
+          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0')]"
         }
       }
     },
@@ -507,7 +485,7 @@
         "osProfile": {
           "computerName": "[parameters('LBVmOsNamePrefix')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "adminPassword": "[parameters('adminSshPublicKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
         },
         "storageProfile": {
@@ -541,7 +519,7 @@
         }
       }
     },
-    // Custom installation scripts for Loadbalancer
+    // Custom pre-installation scripts for Loadbalancer
     {
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -566,9 +544,8 @@
           ]
         },
         "protectedSettings": {
-          //"commandToExecute": "[concat('bash ', parameters('hostsScriptFileName'), ' ', variables('fileServicePrimaryEndpoint'))]"
-          //"commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'))]"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' ''{4}'' {5} {6}; bash {7} {8}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), '/mnt/k8s-share', parameters('adminUsername'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0')]"
+          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0')]"
         }
       }
     },
@@ -612,7 +589,7 @@
       "name": "[parameters('fileStorageAccountName')]",
       "dependsOn": [
         "[variables('vnetId')]",
-        "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicMasterName'), '0'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicMasterName'), '1'))]"
       ],
       "location": "[parameters('location')]",
       "sku": {
@@ -661,7 +638,7 @@
     {
       "apiVersion": "2020-11-01",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[concat(variables('publicMasterIPAddressName'), copyindex('publicMasterIpLoop'))]",
+      "name": "[concat(variables('publicMasterIPAddressName'), copyIndex('publicMasterIpLoop',1))]",
       "copy": {
           "name": "publicMasterIpLoop",
           "count": "[parameters('numberOfMasterNodes')]"
@@ -670,7 +647,7 @@
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-          "domainNameLabel": "[concat(toLower(parameters('MasterVmName')), copyIndex('publicMasterIpLoop'), uniquestring(resourceGroup().id))]"
+          "domainNameLabel": "[concat(toLower(parameters('MasterVmName')), copyIndex('publicMasterIpLoop',1), uniquestring(resourceGroup().id))]"
         }
       }
     },
@@ -678,7 +655,7 @@
     {
       "apiVersion": "2020-11-01",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[concat(variables('publicWorkerIPAddressName'), copyindex('publicWorkerIpLoop'))]",
+      "name": "[concat(variables('publicWorkerIPAddressName'), copyIndex('publicWorkerIpLoop',1))]",
       "copy": {
           "name": "publicWorkerIpLoop",
           "count": "[parameters('numberOfWorkerNodes')]"
@@ -687,7 +664,7 @@
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-          "domainNameLabel": "[concat(toLower(parameters('WorkerVmName')), copyIndex('publicWorkerIpLoop'), uniquestring(resourceGroup().id))]"
+          "domainNameLabel": "[concat(toLower(parameters('WorkerVmName')), copyIndex('publicWorkerIpLoop',1), uniquestring(resourceGroup().id))]"
         }
       }
     },
@@ -730,7 +707,7 @@
     // NICs for Master nodes
     {
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('nicMasterName'), copyindex('nicMasterLoop'))]",
+      "name": "[concat(variables('nicMasterName'), copyIndex('nicMasterLoop',1))]",
       "apiVersion": "2020-05-01",
       "location": "[parameters('location')]",
       "copy": {
@@ -740,7 +717,7 @@
       "dependsOn": [
         "[variables('vnetId')]",
         //"[variables('publicIpId')]",
-        "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicMasterIPAddressName'), copyIndex('nicMasterLoop')))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicMasterIPAddressName'), copyIndex('nicMasterLoop',1)))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -749,7 +726,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicMasterIPAddressName'), copyIndex('nicMasterLoop')))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicMasterIPAddressName'), copyIndex('nicMasterLoop',1)))]"
               },
               "subnet": {
                   "id": "[variables('subnetId')]"
@@ -762,7 +739,7 @@
     // NICs for Worker nodes
     {
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('nicWorkerName'), copyindex('nicWorkerLoop'))]",
+      "name": "[concat(variables('nicWorkerName'), copyIndex('nicWorkerLoop',1))]",
       "apiVersion": "2020-05-01",
       "location": "[parameters('location')]",
       "copy": {
@@ -771,7 +748,7 @@
       },
       "dependsOn": [
         "[variables('vnetId')]",
-        "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicWorkerIPAddressName'), copyIndex('nicWorkerLoop')))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicWorkerIPAddressName'), copyIndex('nicWorkerLoop',1)))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -780,7 +757,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicWorkerIPAddressName'), copyIndex('nicWorkerLoop')))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicWorkerIPAddressName'), copyIndex('nicWorkerLoop',1)))]"
               },
               "subnet": {
                   "id": "[variables('subnetId')]"
