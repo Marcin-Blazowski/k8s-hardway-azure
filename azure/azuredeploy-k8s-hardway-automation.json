@@ -185,6 +185,13 @@
         "description": "Specifies the base URI to the GitHub repo with deployemnt scripts.'"
       }
     },
+    "gitHubRepoBranch": {
+      "type": "string",
+      "defaultValue": "development",
+      "metadata": {
+        "description": "Specifies the branch of the GitHub repo to be cloned on nodes.'"
+      }
+    },    
     "hostsScriptFileName": {
       "type": "string",
       "defaultValue": "generate-hosts-azure.sh",
@@ -373,8 +380,8 @@
           ]
         },
         "protectedSettings": {
-          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; clone-git-repo.sh <repo_link>; put-nodes-prefixes.sh <master-prefix worker-prefix>; master-pre-config-wrapper.sh"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}; bash {7} {8}; bash {9} {10} {11}; bash {12}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'), 'put-hostname-prefixes.sh', parameters('MasterVmOsNamePrefix'), parameters('WorkerVmOsNamePrefix'), '/tmp/k8s-hardway-azure/azure/ubuntu/azure/master-pre-config-wrapper.sh')]"
+          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; clone-git-repo.sh <repo_link> <branch>; put-nodes-prefixes.sh <master-prefix worker-prefix master-count worker-count>; master-pre-config-wrapper.sh"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}; bash {7} {8} {9}; bash {10} {11} {12} {13} {14}; bash {15}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'), parameters('gitHubRepoBranch'), 'put-hostname-prefixes.sh', parameters('MasterVmOsNamePrefix'), parameters('WorkerVmOsNamePrefix'), parameters('numberOfMasterNodes'), parameters('numberOfWorkerNodes'), '/tmp/k8s-hardway-azure/azure/ubuntu/azure/master-pre-config-wrapper.sh')]"
         }
       }
     },
@@ -466,8 +473,8 @@
           ]
         },
         "protectedSettings": {
-          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; clone-git-repo.sh <repo_link>; worker-pre-config-wrapper.sh"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}; bash {7} {8}; bash {9}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'), '/tmp/k8s-hardway-azure/azure/ubuntu/azure/worker-pre-config-wrapper.sh')]"
+          //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; clone-git-repo.sh <repo_link> <branch>; worker-pre-config-wrapper.sh"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}; bash {7} {8} {9}; bash {10}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'), parameters('gitHubRepoBranch'), '/tmp/k8s-hardway-azure/azure/ubuntu/azure/worker-pre-config-wrapper.sh')]"
         }
       }
     },
@@ -551,7 +558,7 @@
         },
         "protectedSettings": {
           //"commandToExecute": "mount-azure-fileshare.sh <multiple-params>; generate-hosts-azure.sh <ifname>; lb-pre-config-wrapper.sh"
-          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}; bash {7} {8}; bash {9}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'), '/tmp/k8s-hardway-azure/azure/ubuntu/azure/lb-pre-config-wrapper.sh')]"
+          "commandToExecute": "[format('bash {0} {1} ''{2}'' ''{3}'' {4}; bash {5} {6}; bash {7} {8} {9}; bash {10}', parameters('mntScriptFileName'), parameters('fileStorageAccountName'), listKeys(parameters('fileStorageAccountName'), '2019-06-01').keys[0].value, parameters('fileShareName'), environment().suffixes.storage, parameters('hostsScriptFileName'),'eth0', parameters('cloneGitScriptFileName'), parameters('gitHubRepoLocation'), parameters('gitHubRepoBranch'), '/tmp/k8s-hardway-azure/azure/ubuntu/azure/lb-pre-config-wrapper.sh')]"
         }
       }
     },

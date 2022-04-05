@@ -23,9 +23,9 @@ mkdir -p /var/lib/kubernetes/
 if [ "$HOSTNAME" == "master-1" ]
 then
     cp /tmp/encryption-config.yaml $HOME/
-    cp /tmp/encryption-config.yaml /vagrant/ubuntu/lab_automation/CA/
+    cp /tmp/encryption-config.yaml /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/
     exit 0
 fi
 
 # if on all other nodes then copy from shared folder
-cp /vagrant/ubuntu/lab_automation/CA/encryption-config.yaml $HOME/
+cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/encryption-config.yaml $HOME/

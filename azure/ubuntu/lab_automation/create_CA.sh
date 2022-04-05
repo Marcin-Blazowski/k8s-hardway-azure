@@ -51,8 +51,23 @@ then
   openssl x509 -req -in kube-scheduler.csr -CA ca.crt -CAkey ca.key \
     -CAcreateserial  -out kube-scheduler.crt -days 1000
 
+  # Put IP addresses into $HOME/CA/openssl.cnf file.
+  MASTER-1_ADDRESS=$(host master-1 | cut -d" " -f4)
+  MASTER-2_ADDRESS=$(host master-2 | cut -d" " -f4)
+  LOADBALANCER_ADDRESS=$(host loadbalancer | cut -d" " -f4)
+
+  cat <<EOF | sudo tee $HOME/CA/openssl.cnf.ips
+IP.1 = 10.96.0.1
+IP.2 = ${MASTER-1_ADDRESS}
+IP.3 = ${MASTER-2_ADDRESS}
+IP.4 = ${LOADBALANCER_ADDRESS}
+IP.5 = 127.0.0.1
+EOF
+  
+  cat $HOME/CA/openssl.cnf.ips >> $HOME/CA/openssl.cnf
+
   # Generate certs for api-server
-  cp /vagrant/ubuntu/lab_automation/openssl.cnf $HOME/CA/
+  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/openssl.cnf $HOME/CA/
   openssl genrsa -out kube-apiserver.key 2048
   openssl req -new -key kube-apiserver.key -subj "/CN=kube-apiserver" \
     -out kube-apiserver.csr -config $HOME/CA/openssl.cnf
@@ -60,8 +75,17 @@ then
     -CAcreateserial -out kube-apiserver.crt -extensions v3_req \
     -extfile openssl.cnf -days 1000
 
+  # Put IP addresses into $HOME/CA/openssl-etcd.cnf file.
+  cat <<EOF | sudo tee $HOME/CA/openssl-etcd.cnf.ips
+IP.1 = ${MASTER-1_ADDRESS}
+IP.2 = ${MASTER-2_ADDRESS}
+IP.3 = 127.0.0.1
+EOF
+  
+  cat $HOME/CA/openssl-etcd.cnf.ips >> $HOME/CA/openssl-etcd.cnf
+
   # Generate certs for ETCD
-  cp /vagrant/ubuntu/lab_automation/openssl-etcd.cnf $HOME/CA/
+  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/openssl-etcd.cnf $HOME/CA/
   openssl genrsa -out etcd-server.key 2048
   openssl req -new -key etcd-server.key -subj "/CN=etcd-server" \
     -out etcd-server.csr -config $HOME/CA/openssl-etcd.cnf
@@ -76,8 +100,22 @@ then
   openssl x509 -req -in service-account.csr -CA ca.crt -CAkey ca.key \
     -CAcreateserial -out service-account.crt -days 1000
 
-  # enerate a certificate and private key for worker-1 node:
-  cp /vagrant/ubuntu/lab_automation/openssl-worker-1.cnf $HOME/CA/
+  # Put IP addresses into $HOME/CA/openssl-worker-x.cnf file.
+  WORKER-1_ADDRESS=$(host worker-1 | cut -d" " -f4)
+  WORKER-2_ADDRESS=$(host worker-2 | cut -d" " -f4)
+  cat <<EOF | sudo tee $HOME/CA/openssl-worker-1.cnf.ips
+IP.1 = ${WORKER-1_ADDRESS}
+EOF
+
+  cat <<EOF | sudo tee $HOME/CA/openssl-worker-2.cnf.ips
+IP.1 = ${WORKER-2_ADDRESS}
+EOF
+  
+  cat $HOME/CA/openssl-worker-1.cnf.ips >> $HOME/CA/openssl-worker-1.cnf
+  cat $HOME/CA/openssl-worker-2.cnf.ips >> $HOME/CA/openssl-worker-2.cnf
+
+  # Generate a certificate and private key for worker-1 node:
+  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/openssl-worker-1.cnf $HOME/CA/
   openssl genrsa -out worker-1.key 2048
   openssl req -new -key worker-1.key -subj "/CN=system:node:worker-1/O=system:nodes" \
     -out worker-1.csr -config $HOME/CA/openssl-worker-1.cnf
@@ -85,8 +123,8 @@ then
     -CAcreateserial -out worker-1.crt -extensions v3_req \
     -extfile $HOME/CA/openssl-worker-1.cnf -days 1000
 
-  # enerate a certificate and private key for worker-2 node:
-  cp /vagrant/ubuntu/lab_automation/openssl-worker-2.cnf $HOME/CA/
+  # Generate a certificate and private key for worker-2 node:
+  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/openssl-worker-2.cnf $HOME/CA/
   openssl genrsa -out worker-2.key 2048
   openssl req -new -key worker-2.key -subj "/CN=system:node:worker-2/O=system:nodes" \
     -out worker-2.csr -config $HOME/CA/openssl-worker-2.cnf
@@ -99,12 +137,12 @@ then
   cp $HOME/CA/*.key $HOME/
   
   # copy to shared folder
-  mkdir -p /vagrant/ubuntu/lab_automation/CA
-  cp $HOME/CA/*.crt /vagrant/ubuntu/lab_automation/CA/
-  cp $HOME/CA/*.key /vagrant/ubuntu/lab_automation/CA/
+  mkdir -p /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA
+  cp $HOME/CA/*.crt /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/
+  cp $HOME/CA/*.key /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/
 
 fi
 
 # Copy the appropriate certificates and private keys to each controller instance:
-cp /vagrant/ubuntu/lab_automation/CA/*.crt $HOME/
-cp /vagrant/ubuntu/lab_automation/CA/*.key $HOME/
+cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/*.crt $HOME/
+cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/*.key $HOME/
