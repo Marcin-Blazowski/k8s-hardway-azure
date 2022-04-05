@@ -9,6 +9,61 @@
         "description": "Specifies the location for all the resources."
       }
     },
+    "authenticationType": {
+      "type": "string",
+      "defaultValue": "sshPublicKey",
+      "allowedValues": [
+        "sshPublicKey"
+      ],
+      "metadata": {
+        "description": "Specifies the type of authentication when accessing the Virtual Machine. Only SSH key is allowed."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "defaultValue": "k8sadmin",
+      "metadata": {
+        "description": "Specifies the name of the administrator account of the virtual machine."
+      }
+    },
+    "adminSshPublicKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Specifies the SSH Public Key of the admin user."
+      }
+    },
+    "MasterVmSize": {
+      "type": "string",
+      "defaultValue": "Standard_B1ms",
+      "metadata": {
+        "description": "Specifies the size of the master node virtual machine."
+      }
+    },
+    "WorkerVmSize": {
+      "type": "string",
+      "defaultValue": "Standard_B1ls",
+      "metadata": {
+        "description": "Specifies the size of the worker node and loadbalancer virtual machine."
+      }
+    },
+   "numberOfMasterNodes": {
+      "type": "int",
+      "minValue": 2,
+      "maxValue": 9, // multiple changes needed to use more than 2
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Number of master VMs to be created."
+      }
+    },
+    "numberOfWorkerNodes": {
+      "type": "int",
+      "minValue": 2,
+      "maxValue": 9, // multiple changes needed to use more than 2
+      "defaultValue": 2, // multiple changes needed to use more than 2
+      "metadata": {
+        "description": "Number of worker VMs to be created."
+      }
+    },
     "virtualNetworkName": {
       "defaultValue": "k8s-hardway-vnet",
       "type": "string",
@@ -79,31 +134,6 @@
         "description": "Specifies the hostname of the virtual machine."
       }
     },    
-    "vmSize": {
-      "type": "string",
-      "defaultValue": "Standard_B1s",
-      "metadata": {
-        "description": "Specifies the size of the virtual machine."
-      }
-    },
-    "numberOfWorkerNodes": {
-      "type": "int",
-      "minValue": 2,
-      "maxValue": 9, // multiple changes needed to use more than 2
-      "defaultValue": 2, // multiple changes needed to use more than 2
-      "metadata": {
-        "description": "Number of worker VMs to be created."
-      }
-    },
-   "numberOfMasterNodes": {
-      "type": "int",
-      "minValue": 2,
-      "maxValue": 9, // multiple changes needed to use more than 2
-      "defaultValue": 2,
-      "metadata": {
-        "description": "Number of master VMs to be created."
-      }
-    },    
     "imagePublisher": {
       "type": "string",
       "defaultValue": "Canonical",
@@ -123,29 +153,6 @@
       "defaultValue": "18.04-LTS",
       "metadata": {
         "description": "Specifies the Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-      }
-    },
-    "authenticationType": {
-      "type": "string",
-      "defaultValue": "sshPublicKey",
-      "allowedValues": [
-        "sshPublicKey"
-      ],
-      "metadata": {
-        "description": "Specifies the type of authentication when accessing the Virtual Machine. Only SSH key is allowed."
-      }
-    },
-    "adminUsername": {
-      "type": "string",
-      "defaultValue": "k8sadmin",
-      "metadata": {
-        "description": "Specifies the name of the administrator account of the virtual machine."
-      }
-    },
-    "adminSshPublicKey": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Specifies the SSH Public Key of the admin user."
       }
     },
     "diskStorageAccounType": {
@@ -309,7 +316,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('vmSize')]"
+          "vmSize": "[parameters('MasterVmSize')]"
         },
         "osProfile": {
           "computerName": "[concat(parameters('MasterVmOsNamePrefix'), copyIndex('masterVmLoop',1))]",
@@ -401,7 +408,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('vmSize')]"
+          "vmSize": "[parameters('WorkerVmSize')]"
         },
         "osProfile": {
           "computerName": "[concat(parameters('WorkerVmOsNamePrefix'), copyIndex('workerVmLoop',1))]",
@@ -490,7 +497,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('vmSize')]"
+          "vmSize": "[parameters('WorkerVmSize')]"
         },
         "osProfile": {
           "computerName": "[parameters('LBVmOsNamePrefix')]",
