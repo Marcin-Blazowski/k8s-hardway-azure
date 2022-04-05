@@ -18,6 +18,6 @@ Steps below are for Windows hosts but you can tune this for Linux.
 You should get 5 VMs created with the k8s cluster provisioned by shell scripts.
 The last step which should be also completed is responsible for smoke tests execution. Please review `vagrant up` output log.
 
-You can also compare with the log stored [here](../vagrant/ubuntu/lab_automation/log/k8s-hard-way-vagrant-up-20220309.log).
+You can also compare with the log stored [here](/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/log/k8s-hard-way-vagrant-up-20220309.log).
 
 Previous: [Smoke Test](15-smoke-test.md)

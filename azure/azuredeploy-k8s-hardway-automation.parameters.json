@@ -5,7 +5,7 @@
     "adminUsername": {
       "value": "GEN-UNIQUE"
     },
-    "adminSshKey": {
+    "adminSshPublicKey": {
       "value": "GEN-PASSWORD"
     }
   }
