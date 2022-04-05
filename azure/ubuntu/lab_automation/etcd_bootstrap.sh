@@ -24,8 +24,8 @@ cp /tmp/etcd-${ETCD_VER}-linux-amd64/etcd* /usr/local/bin/
 # get local IP address (assigned to eth0 interface, this is Azure interface id provided to Ubuntu)
 INTERNAL_IP=$(ip addr show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f 1)
 ETCD_NAME=$(hostname -s)
-MASTER-1_ADDRESS=$(host master-1 | cut -d" " -f4)
-MASTER-2_ADDRESS=$(host master-2 | cut -d" " -f4)
+MASTER_1_ADDRESS=$(host master-1 | cut -d" " -f4)
+MASTER_2_ADDRESS=$(host master-2 | cut -d" " -f4)
 
 
 # create etcd.service systemd unit file
@@ -50,7 +50,7 @@ ExecStart=/usr/local/bin/etcd \\
   --listen-client-urls https://${INTERNAL_IP}:2379,https://127.0.0.1:2379 \\
   --advertise-client-urls https://${INTERNAL_IP}:2379 \\
   --initial-cluster-token etcd-cluster-0 \\
-  --initial-cluster master-1=https://${MASTER-1_ADDRESS}:2380,master-2=https://${MASTER-1_ADDRESS}:2380 \\
+  --initial-cluster master-1=https://${MASTER_1_ADDRESS}:2380,master-2=https://${MASTER_1_ADDRESS}:2380 \\
   --initial-cluster-state new \\
   --data-dir=/var/lib/etcd
 Restart=on-failure

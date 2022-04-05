@@ -52,14 +52,14 @@ then
     -CAcreateserial  -out kube-scheduler.crt -days 1000
 
   # Put IP addresses into $HOME/CA/openssl.cnf file.
-  MASTER-1_ADDRESS=$(host master-1 | cut -d" " -f4)
-  MASTER-2_ADDRESS=$(host master-2 | cut -d" " -f4)
+  MASTER_1_ADDRESS=$(host master-1 | cut -d" " -f4)
+  MASTER_2_ADDRESS=$(host master-2 | cut -d" " -f4)
   LOADBALANCER_ADDRESS=$(host loadbalancer | cut -d" " -f4)
 
   cat <<EOF | sudo tee $HOME/CA/openssl.cnf.ips
 IP.1 = 10.96.0.1
-IP.2 = ${MASTER-1_ADDRESS}
-IP.3 = ${MASTER-2_ADDRESS}
+IP.2 = ${MASTER_1_ADDRESS}
+IP.3 = ${MASTER_2_ADDRESS}
 IP.4 = ${LOADBALANCER_ADDRESS}
 IP.5 = 127.0.0.1
 EOF
@@ -77,8 +77,8 @@ EOF
 
   # Put IP addresses into $HOME/CA/openssl-etcd.cnf file.
   cat <<EOF | sudo tee $HOME/CA/openssl-etcd.cnf.ips
-IP.1 = ${MASTER-1_ADDRESS}
-IP.2 = ${MASTER-2_ADDRESS}
+IP.1 = ${MASTER_1_ADDRESS}
+IP.2 = ${MASTER_2_ADDRESS}
 IP.3 = 127.0.0.1
 EOF
   
@@ -101,14 +101,14 @@ EOF
     -CAcreateserial -out service-account.crt -days 1000
 
   # Put IP addresses into $HOME/CA/openssl-worker-x.cnf file.
-  WORKER-1_ADDRESS=$(host worker-1 | cut -d" " -f4)
-  WORKER-2_ADDRESS=$(host worker-2 | cut -d" " -f4)
+  WORKER_1_ADDRESS=$(host worker-1 | cut -d" " -f4)
+  WORKER_2_ADDRESS=$(host worker-2 | cut -d" " -f4)
   cat <<EOF | sudo tee $HOME/CA/openssl-worker-1.cnf.ips
-IP.1 = ${WORKER-1_ADDRESS}
+IP.1 = ${WORKER_1_ADDRESS}
 EOF
 
   cat <<EOF | sudo tee $HOME/CA/openssl-worker-2.cnf.ips
-IP.1 = ${WORKER-2_ADDRESS}
+IP.1 = ${WORKER_2_ADDRESS}
 EOF
   
   cat $HOME/CA/openssl-worker-1.cnf.ips >> $HOME/CA/openssl-worker-1.cnf
