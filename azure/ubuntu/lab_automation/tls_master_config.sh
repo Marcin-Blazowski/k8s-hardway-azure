@@ -23,7 +23,7 @@ TOKEN_SECRET=${TOKEN_SECRET}
 EOF
 
 # share the token
-cp $HOME/CA/bootstrap-token.txt /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/
+cp $HOME/CA/bootstrap-token.txt /mnt/k8s-share/azure/ubuntu/lab_automation/CA/
 
 cd $HOME
 

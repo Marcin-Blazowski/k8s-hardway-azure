@@ -8,6 +8,6 @@ then
   exit 0
 fi
 
-cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/coredns.yaml $HOME/
+cp /mnt/k8s-share/azure/ubuntu/lab_automation/coredns.yaml $HOME/
 
 kubectl apply -f $HOME/coredns.yaml
