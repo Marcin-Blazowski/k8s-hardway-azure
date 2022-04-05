@@ -2,3 +2,14 @@
 # this is wrapper to execute scripts for master node pre-configuration step
 # nothing is needed for master node on azure
 echo "Hello from ${HOSTNAME}!">> /mnt/k8s-share/automation-wrapper-hello.txt
+
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/grant_ssh.sh
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/install_kubectl.sh
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/create_CA.sh
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/create_kube_configs.sh
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/create_encryption_config.sh
+
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/etcd_bootstrap.sh
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/control_plane_bootstrap.sh
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/configure_admin_kubectl.sh
+/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/tls_master_config.sh
