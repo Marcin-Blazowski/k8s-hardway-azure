@@ -460,9 +460,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         //"[variables('MasterVmId')]"
-        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker',1)))]",
-        // wait for the master-1 to mount the github repo
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('MasterVmName'), '1'), variables('customScriptExtensionName'))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker',1)))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -544,9 +542,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         //"[variables('MasterVmId')]"
-        "[resourceId('Microsoft.Compute/virtualMachines', parameters('LBVmName'))]",
-        // wait for the master-1 to mount the github repo
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('MasterVmName'), '1'), variables('customScriptExtensionName'))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('LBVmName'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -720,7 +716,28 @@
               "sourcePortRange": "*",
               "destinationAddressPrefix": "*"
             }
-          }
+          },
+          {
+            "name": "k8s",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "[parameters('subnetAddressPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Inbound",
+              "sourcePortRanges": [],
+              "destinationPortRanges": [
+                  "6443",
+                  "2379",
+                  "2380",
+                  "30000-32767"
+              ],
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
+            }
+          } 
         ]
       }
     },
