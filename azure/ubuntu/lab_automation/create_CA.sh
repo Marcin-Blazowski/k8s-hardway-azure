@@ -1,5 +1,6 @@
 #!/bin/bash
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 # if this is master-1 then generate and share
 if [ "$HOSTNAME" == "master-1" ]

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 # Run this only on master-2
 if [ "$HOSTNAME" != "master-2" ]

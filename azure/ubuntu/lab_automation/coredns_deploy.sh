@@ -1,5 +1,6 @@
 #!/bin/bash
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 # Run this only on worker-2. This is to enforce delay
 if [ "$HOSTNAME" != "worker-2" ]

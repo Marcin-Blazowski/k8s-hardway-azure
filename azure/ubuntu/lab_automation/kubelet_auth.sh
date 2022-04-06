@@ -1,5 +1,6 @@
 #!/bin/bash
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/cluster_role_nodes.yaml $HOME/
 cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/cluster_role_binding_nodes.yaml $HOME/

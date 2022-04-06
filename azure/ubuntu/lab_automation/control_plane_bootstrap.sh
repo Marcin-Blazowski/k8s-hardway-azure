@@ -1,4 +1,5 @@
 #!/bin/bash
+export HOME=~
 
 sudo mkdir -p /etc/kubernetes/config
 # Download binaries

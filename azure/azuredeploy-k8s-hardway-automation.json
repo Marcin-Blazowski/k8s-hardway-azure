@@ -306,7 +306,8 @@
       "type": "Microsoft.Compute/virtualMachines",
       "copy": {
         "name": "masterVmLoop",
-        "count": "[parameters('numberOfMasterNodes')]"
+        "count": "[parameters('numberOfMasterNodes')]",
+        "mode": "serial"
       },
       "name": "[concat(parameters('MasterVmName'), copyIndex('masterVmLoop',1))]",
       "location": "[parameters('location')]",
@@ -370,6 +371,11 @@
       "dependsOn": [
         //"[variables('MasterVmId')]"
         "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('MasterVmName'), copyIndex('CustExtLoop',1)))]",
+        // wait for all VMs to be ready. All hosts must be registered in azure privte DNS
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), '2'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), '1'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('MasterVmName'), '2'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('MasterVmName'), '1'))]",
         // wait for the Loadbalancer to be ready
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('LBVmName'), variables('customScriptExtensionName'))]"
       ],
@@ -465,6 +471,9 @@
       "dependsOn": [
         // wait for the VM to be ready"
         "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker',1)))]",
+        // wait for all VMs to be ready. All hosts must be registered in azure privte DNS
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), '2'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), '1'))]",
         // wait for the master-2 to have all master nodes ready
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('MasterVmName'), '2'), variables('customScriptExtensionName'))]",
         // wait for the Loadbalancer to be ready
@@ -550,7 +559,10 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         //"[variables('MasterVmId')]"
-        "[resourceId('Microsoft.Compute/virtualMachines', parameters('LBVmName'))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('LBVmName'))]",
+        // wait for both master nodes, both are needed to configure lb backend
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('MasterVmName'), '2'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('MasterVmName'), '1'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",

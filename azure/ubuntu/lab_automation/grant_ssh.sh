@@ -1,5 +1,6 @@
 #!/bin/bash
 HOSTNAME=$(hostname -s)
+export HOME=~
 # generate key pair if on master-1 VM and copy to the shared folder
 if [ "$HOSTNAME" = "master-1" ]
 then

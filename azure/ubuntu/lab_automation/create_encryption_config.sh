@@ -1,5 +1,6 @@
 #!/bin/bash
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 

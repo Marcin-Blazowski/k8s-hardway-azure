@@ -1,6 +1,7 @@
 #!/bin/bash
 
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 # Run this on worker[2-x]. Do not run on worker-1
 if [ "$HOSTNAME" == "worker-1" ]
