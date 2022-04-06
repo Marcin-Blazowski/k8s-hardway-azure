@@ -21,6 +21,9 @@ if [[ ! -f "$FILE" ]]; then
     cp /mnt/k8s-share/azure/ubuntu/lab_automation/CA/${FILE} $HOME/
 fi
 
+# wait for the API server to be active
+sleep 15
+
 # Generate a kubeconfig file suitable for authenticating as the admin user
 {
   KUBERNETES_LB_ADDRESS=$(host loadbalancer | cut -d" " -f4)

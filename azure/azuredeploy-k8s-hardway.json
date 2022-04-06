@@ -41,7 +41,7 @@
     },
     "WorkerVmSize": {
       "type": "string",
-      "defaultValue": "Standard_B1ls",
+      "defaultValue": "Standard_B1s",
       "metadata": {
         "description": "Specifies the size of the worker node and loadbalancer virtual machine."
       }

@@ -18,8 +18,8 @@ echo "Run busybox container"
 kubectl run busybox --image=busybox:1.28 --command -- sleep 3600
 
 echo ""
-echo "Waiting for the running busybox container (timeout 120s)..."
-kubectl wait --for=jsonpath='{.status.phase}'=Running pod -l run=busybox --timeout=120s
+echo "Waiting for the running busybox container (timeout 360s)..."
+kubectl wait --for=jsonpath='{.status.phase}'=Running pod -l run=busybox --timeout=360s
 
 echo
 kubectl get pods -l run=busybox
@@ -34,8 +34,8 @@ echo "Create deployment"
 kubectl create deployment nginx --image=nginx
 
 echo ""
-echo "Waiting for the nginx deployment to be available (timeout 120s) ..."
-kubectl wait --for=condition=Available deployment -l app=nginx --timeout=120s
+echo "Waiting for the nginx deployment to be available (timeout 360s) ..."
+kubectl wait --for=condition=Available deployment -l app=nginx --timeout=360s
 
 echo
 kubectl get pods -l app=nginx
@@ -51,8 +51,8 @@ PORT_NUMBER=$(kubectl get svc -l app=nginx -o jsonpath="{.items[0].spec.ports[0]
 echo "Port number = ${PORT_NUMBER}"
 
 # micro delay to wait for port to be exposed on both worker nodes
-echo "sleep 5"
-sleep 5
+echo "sleep 15"
+sleep 15
 
 # test running nginx
 echo

@@ -56,6 +56,8 @@ stringData:
   auth-extra-groups: system:bootstrappers:worker
 EOF
 
+# wait a little bit for the local API server to be active
+sleep 15
 kubectl create -f $HOME/CA/bootstrap-token-${TOKEN_ID}.yaml --kubeconfig=admin.kubeconfig
 
 # Authorize workers(kubelets) to create CSR
