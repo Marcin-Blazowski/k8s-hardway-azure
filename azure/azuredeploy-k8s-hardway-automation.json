@@ -465,8 +465,8 @@
       "dependsOn": [
         // wait for the VM to be ready"
         "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('WorkerVmName'), copyIndex('CustExtLoopWorker',1)))]",
-        // wait for the master-1 to provision maste node
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('MasterVmName'), '1'), variables('customScriptExtensionName'))]",
+        // wait for the master-2 to have all master nodes ready
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('MasterVmName'), '2'), variables('customScriptExtensionName'))]",
         // wait for the Loadbalancer to be ready
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('LBVmName'), variables('customScriptExtensionName'))]"
       ],
@@ -740,7 +740,8 @@
                   "6443",
                   "2379",
                   "2380",
-                  "30000-32767"
+                  "30000-32767",
+                  "10250"
               ],
               "sourceAddressPrefixes": [],
               "destinationAddressPrefixes": []

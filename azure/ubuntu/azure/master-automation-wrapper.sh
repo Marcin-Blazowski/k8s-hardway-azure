@@ -1,6 +1,10 @@
 #!/bin/bash
 # this is wrapper to execute scripts for master node pre-configuration step
 echo "Hello from ${HOSTNAME}!">> /mnt/k8s-share/automation-wrapper-hello.txt
+echo "HOME = ${HOME} on ${HOSTNAME}!">> /mnt/k8s-share/automation-wrapper-hello.txt
+
+export HOME=~
+echo "HOME = ${HOME} on ${HOSTNAME}!">> /mnt/k8s-share/automation-wrapper-hello.txt
 
 #disable IP v6
 #/tmp/k8s-hardway-azure/azure/ubuntu/azure/disable-ipv6.sh

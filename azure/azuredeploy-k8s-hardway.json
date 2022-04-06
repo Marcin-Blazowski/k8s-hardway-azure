@@ -732,7 +732,8 @@
                   "6443",
                   "2379",
                   "2380",
-                  "30000-32767"
+                  "30000-32767",
+                  "10250"
               ],
               "sourceAddressPrefixes": [],
               "destinationAddressPrefixes": []
