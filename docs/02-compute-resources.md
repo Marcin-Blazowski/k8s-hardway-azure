@@ -8,7 +8,7 @@ Log in into [Azure Portal](https://portal.azure.com) in a separate Internet brow
 
 Click the button above to deploye ARM template on your Azure cloud.
 
-[![Deploy To Azure](https://github.com/Marcin-Blazowski/k8s-hardway-azure/raw/main/docs/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/Marcin-Blazowski/k8s-hardway-azure/main/azure/azuredeploy-k8s-hardway.json)
+[![Deploy To Azure](https://github.com/Marcin-Blazowski/k8s-hardway-azure/raw/main/docs/images/deploy-to-azure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMarcin-Blazowski%2Fk8s-hardway-azure%2Fmain%2Fazure%2Fazuredeploy-k8s-hardway.json)
 
 Select your subscription.
 
