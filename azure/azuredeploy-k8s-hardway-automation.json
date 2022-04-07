@@ -194,7 +194,7 @@
     },
     "gitHubRepoBranch": {
       "type": "string",
-      "defaultValue": "development",
+      "defaultValue": "main",
       "metadata": {
         "description": "Specifies the branch of the GitHub repo to be cloned on nodes.'"
       }
