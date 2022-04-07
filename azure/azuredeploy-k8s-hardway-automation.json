@@ -256,7 +256,7 @@
     },
     "allowBlobPublicAccess": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Allow or disallow public access to all blobs or containers in the storage accounts. The default interpretation is true for this property."
       }

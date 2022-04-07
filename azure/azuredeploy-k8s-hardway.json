@@ -194,7 +194,7 @@
     },
     "gitHubRepoBranch": {
       "type": "string",
-      "defaultValue": "development",
+      "defaultValue": "main",
       "metadata": {
         "description": "Specifies the branch of the GitHub repo to be cloned on nodes.'"
       }
@@ -256,7 +256,7 @@
     },
     "allowBlobPublicAccess": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Allow or disallow public access to all blobs or containers in the storage accounts. The default interpretation is true for this property."
       }

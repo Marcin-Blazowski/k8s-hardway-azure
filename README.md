@@ -27,7 +27,7 @@ The target audience for this tutorial is someone planning to support a productio
 
 Kubernetes The Hard Way guides you through bootstrapping a highly available Kubernetes cluster with end-to-end encryption between components and RBAC authentication.
 
-* [Ubuntu](https://ubuntu.com/) 18.04, tested with the latest image available on Azure on 06.04.2022
+* [Ubuntu](https://ubuntu.com/) 18.04, tested with the 18.04.6 LTS image available on Azure
 * [Kubernetes](https://github.com/kubernetes/kubernetes) latest version (tested with 1.23.5)
 * [Docker](https://docs.docker.com) latest version (by https://get.docker.com, tested with 20.10.14)
 * [CNI Container Networking](https://github.com/containernetworking/cni) latest version (tested with 1.1.1)
