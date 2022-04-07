@@ -27,6 +27,8 @@ Recommendation: Use "k8s-test-rg" or any other similar name. Note the name of th
 
 - Set your VM sizes. I do recommend "Standard_B1ms" for master nodes and "Standard_B1s" for workers and loadbalancer. If you use Azure free account you will have to select smallest supported by your subscription (B sizes were not supported by my free account).
 
+- Click "Review + Create" and then "Create".
+
 ## Compute Resources
 
 The deployment should create what is described below:
