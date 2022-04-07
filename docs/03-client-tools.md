@@ -13,9 +13,8 @@ You can run `sudo su -` as user k8sadmin to switch to user root.
 ## Access all VMs
 
 Generate Key Pair on master-1 node.
-Go to the folder with Vagrantfile and
 ```
-vagrant ssh master-1
+ssh k8sadmin@<master-1-public-IP>
 sudo su -
 ssh-keygen
 ```
