@@ -8,7 +8,7 @@ Log in into [Azure Portal](https://portal.azure.com) in a separate Internet brow
 
 ## Provision Compute Resources
 
-- Click the button above to deploye ARM template on your Azure cloud. Use CTRL + Click to open in a new tab.
+- Click the button below to deploy ARM template on your Azure cloud. Use CTRL + Click to open in a new tab.
 
 [![Deploy To Azure](../docs/images/deploy-to-azure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMarcin-Blazowski%2Fk8s-hardway-azure%2Fmain%2Fazure%2Fazuredeploy-k8s-hardway.json)
 
@@ -40,14 +40,14 @@ The deployment should create what is described below:
 - Sets IP addresses in the range 10.0.0.0/25
 
     | VM            |  VM Name                   | Purpose       | IP       | 
-    | ------------  | ----------------------     |:-------------:| --------:| 
+    | ------------  | ----------------------     |:-------------:|:--------:| 
     | master-1      | k8s-hardway-master-1       | Master        | 10.0.0.x | 
     | master-2      | k8s-hardway-master-2       | Master        | 10.0.0.x | 
     | worker-1      | k8s-hardway-worker-1       | Worker        | 10.0.0.x | 
     | worker-2      | k8s-hardway-worker-2       | Worker        | 10.0.0.x | 
     | loadbalancer  | kubernetes-ha-loadbalancer | LoadBalancer  | 10.0.0.x | 
 
-    > These are the default settings. These can be changed the same way like hostnames but you will have to alter the guid accordingly.
+    > These are the default settings. These can be changed the same way like hostnames but you will have to alter the guide accordingly.
 
 - Installs Docker on Worker nodes (this is done automaatically on Worker nodes)
 - Runs the below command on all nodes to allow for network forwarding in IP Tables.

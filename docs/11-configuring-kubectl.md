@@ -11,12 +11,13 @@ You run this lab on both master nodes or an any other nodes which you want to us
 
 Each kubeconfig requires a Kubernetes API Server to connect to. To support high availability the IP address assigned to the external load balancer fronting the Kubernetes API Servers will be used.
 
+
 Generate a kubeconfig file suitable for authenticating as the `admin` user:
 
 ```
 {
-  KUBERNETES_LB_ADDRESS=192.168.5.30
-
+  KUBERNETES_LB_ADDRESS=$(host loadbalancer | cut -d" " -f4)
+  
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.crt \
     --embed-certs=true \

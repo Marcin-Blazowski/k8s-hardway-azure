@@ -21,6 +21,11 @@ Generate a certificate and private key for one worker node:
 
 #### On master-1:
 
+Get IP addresses of your VMs:
+```
+WORKER_1_ADDRESS=$(host worker-1 | cut -d" " -f4)
+```
+
 ```
 cd $HOME/CA
 cat > openssl-worker-1.cnf <<EOF
@@ -34,7 +39,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
 DNS.1 = worker-1
-IP.1 = 192.168.5.21
+IP.1 = ${WORKER_1_ADDRESS}
 EOF
 
 openssl genrsa -out worker-1.key 2048
@@ -55,7 +60,7 @@ When generating kubeconfig files for Kubelets the client certificate matching th
 
 Get the kub-api server load-balancer IP.
 ```
-LOADBALANCER_ADDRESS=192.168.5.30
+LOADBALANCER_ADDRESS=$(host loadbalancer | cut -d" " -f4)
 ```
 
 Generate a kubeconfig file for the first worker node.
@@ -216,7 +221,7 @@ apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:
   kubeconfig: "/var/lib/kube-proxy/kubeconfig"
 mode: "iptables"
-clusterCIDR: "192.168.5.0/24"
+clusterCIDR: "10.0.0.0/25"
 EOF
 ```
 
@@ -264,7 +269,7 @@ kubectl get nodes --kubeconfig admin.kubeconfig
 
 ```
 NAME       STATUS     ROLES    AGE   VERSION
-worker-1   NotReady   <none>   93s   v1.23.4
+worker-1   NotReady   <none>   93s   v1.23.5
 ```
 
 > Note: It is OK for the worker node to be in a NotReady state.
