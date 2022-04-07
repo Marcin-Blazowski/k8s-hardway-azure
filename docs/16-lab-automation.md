@@ -14,5 +14,7 @@ If you have some problems with labs and you want to make sure that it is going t
 
 You should get 5 VMs created with the k8s cluster provisioned by shell scripts. You can review scripts here [Automation scripts](../azure/ubuntu/azure/). "*automation-wrapper.sh" are the ones you are looking for.
 
+## Do not forget to clean up your Azure resources.
+Clean up resources: [Delete Azure cloud resources](../docs/clean-up.md)
 
 Previous: [Smoke Test](15-smoke-test.md)

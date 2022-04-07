@@ -147,6 +147,11 @@ kubectl exec -ti $POD_NAME -- nginx -v
 nginx version: nginx/1.21.6
 ```
 
+## Do not forget to clean up your Azure resources.
+Clean up resources: [Delete Azure cloud resources](../docs/clean-up.md)
+
 Next: [All labs automated](16-lab-automation.md)
+
+Clean-up resources: [Delete Azure cloud resources](../docs/clean-up.md)
 
 Previous: [DNS Addon](14-dns-addon.md)

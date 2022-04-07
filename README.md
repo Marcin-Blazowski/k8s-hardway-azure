@@ -57,4 +57,5 @@ Kubernetes The Hard Way guides you through bootstrapping a highly available Kube
 * [Deploying the DNS Cluster Add-on](docs/14-dns-addon.md)
 * [Smoke Test](docs/15-smoke-test.md)
 * [Lab Automation](docs/16-lab-automation.md)
+* [Clean up Azure cloud resources](docs/clean-up.md)
 * [Extra - Certificate Verification](docs/verify-certificates.md)
