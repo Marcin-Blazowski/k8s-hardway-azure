@@ -29,6 +29,8 @@ Recommendation: Use "k8s-test-rg" or any other similar name. Note the name of th
 
 - Click "Review + Create" and then "Create".
 
+- It should take about 5 minutes to provision all resources.
+
 ## Compute Resources
 
 The deployment should create what is described below:

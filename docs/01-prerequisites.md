@@ -9,7 +9,7 @@ If you do not have you can get some while moving through this tutorial.
 ## Azure Cloud Requirements
 
 - Active Azure subscription. You can use a free one but default sizes of VMs were not availble for me while testing.
-- 5 VMs, 5 public IP addresses, virtual network, storage account, file share will be created by default.
+- 5 VMs, 5 public IP addresses, virtual network, storage account, file share will be created by default. Master VMs: 1 vCPU + 2 GB RAM, Worker VMs:1 vCPU + 1 GB RAM.
 - If you use default sizes of VMs the cost should be lower then 2 EUR for 24 hours (or 0.7 EUR if you stop your testing after business hours).
 - The chart below shows the cost estimation after several days of testing (about 1-2 hours per day of active resources).
 
