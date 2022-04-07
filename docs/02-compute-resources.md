@@ -6,27 +6,30 @@ Note: You must have active Azure subscription at this point.
 
 Log in into [Azure Portal](https://portal.azure.com) in a separate Internet browser tab.
 
-Click the button above to deploye ARM template on your Azure cloud. Use CTRL + Click to open in a new tab.
+## Provision Compute Resources
+
+- Click the button above to deploye ARM template on your Azure cloud. Use CTRL + Click to open in a new tab.
 
 [![Deploy To Azure](../docs/images/deploy-to-azure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMarcin-Blazowski%2Fk8s-hardway-azure%2Fmain%2Fazure%2Fazuredeploy-k8s-hardway.json)
 
-Select your subscription.
+- Select your subscription.
 
-Click "Create new" to create dedicated resource group for your Kubernetest Cluster (k8s).
+- Click "Create new" to create dedicated resource group for your Kubernetest Cluster (k8s).
 Recommendation: Use "k8s-test-rg" or any other similar name. Note the name of the resource group. You will need it to clean up resources to limit the cost of the cloud.
 
-Select region (the one which is close to you is the best choice).
+- Select region (the one which is close to you is the best choice).
 
-Note: I assume that you have SSH key pair. If you do not have one create it and use with your preferred SSH client later in this tutorial.
+- Note: I assume that you have SSH key pair. If you do not have one create it and use with your preferred SSH client later in this tutorial.
 
-Select "Use existing public key" for "SSH public key source" or use any other option if you know what your are doing.
+- Select "Use existing public key" for "SSH public key source" or use any other option if you know what your are doing.
 
-Put you SSH public key into "Admin Ssh Public Key".
+- Put you SSH public key into "Admin Ssh Public Key".
 
-Set your VM sizes. I do recommend "Standard_B1ms" for master nodes and "Standard_B1s" for workers and loadbalancer. If you use Azure free account you will have to select smallest supported by your subscription (B sizes were not supported by my free account).
+- Set your VM sizes. I do recommend "Standard_B1ms" for master nodes and "Standard_B1s" for workers and loadbalancer. If you use Azure free account you will have to select smallest supported by your subscription (B sizes were not supported by my free account).
 
+## Compute Resources
 
-This does the below:
+The deployment should create what is described below:
 
 - Deploys 5 VMs - 2 Master, 2 Worker and 1 Loadbalancer with the name 'k8s-hardway* '
     > This is the default settings. This can be changed by setting template parameters.
@@ -58,7 +61,7 @@ This does the below:
 
 Use your favourite SSH Terminal tool. Make sure your SSH client uses the SSH key you used while triggering deployment of resources above.
 
-Review resources created. Get IP addresses of your VMs. Password based SSH authentication is disabled by default.
+Review resources created. Get Public IP addresses of your VMs. Password based SSH authentication is disabled by default.
 
 Log in into all VMs using the k8sadmin user name.
 
