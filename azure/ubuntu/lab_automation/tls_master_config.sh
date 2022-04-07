@@ -1,6 +1,7 @@
 #!/bin/bash
 
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 # Run this only on master-2
 if [ "$HOSTNAME" != "master-2" ]
@@ -23,7 +24,7 @@ TOKEN_SECRET=${TOKEN_SECRET}
 EOF
 
 # share the token
-cp $HOME/CA/bootstrap-token.txt /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/
+cp $HOME/CA/bootstrap-token.txt /mnt/k8s-share/azure/ubuntu/lab_automation/CA/
 
 cd $HOME
 
@@ -56,6 +57,8 @@ stringData:
   auth-extra-groups: system:bootstrappers:worker
 EOF
 
+# wait a little bit for the local API server to be active
+sleep 15
 kubectl create -f $HOME/CA/bootstrap-token-${TOKEN_ID}.yaml --kubeconfig=admin.kubeconfig
 
 # Authorize workers(kubelets) to create CSR

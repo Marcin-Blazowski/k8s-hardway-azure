@@ -74,16 +74,20 @@ Install the Kubernetes binaries:
 }
 ```
 
-The instance internal IP address will be used to advertise the API Server to members of the cluster. Retrieve the internal IP address for the current compute instance:
+The instance internal IP address will be used to advertise the API Server to members of the cluster. Retrieve the internal IP address for the current compute instance and master nodes addresses:
 
 ```
-INTERNAL_IP=$(ip addr show enp0s8 | grep "inet " | awk '{print $2}' | cut -d / -f 1)
+INTERNAL_IP=$(ip addr show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f 1)
+MASTER_1_ADDRESS=$(host master-1 | cut -d" " -f4)
+MASTER_2_ADDRESS=$(host master-2 | cut -d" " -f4)
 ```
 
-Verify it is set
+Verify all are set
 
 ```
 echo $INTERNAL_IP
+echo $MASTER_1_ADDRESS
+echo $MASTER_1_ADDRESS
 ```
 
 Create the `kube-apiserver.service` systemd unit file:
@@ -112,7 +116,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --etcd-cafile=/var/lib/kubernetes/ca.crt \\
   --etcd-certfile=/var/lib/kubernetes/etcd-server.crt \\
   --etcd-keyfile=/var/lib/kubernetes/etcd-server.key \\
-  --etcd-servers=https://192.168.5.11:2379,https://192.168.5.12:2379 \\
+  --etcd-servers=https://${MASTER_1_ADDRESS}:2379,https://${MASTER_2_ADDRESS}:2379 \\
   --event-ttl=1h \\
   --encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.crt \\
@@ -156,7 +160,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 [Service]
 ExecStart=/usr/local/bin/kube-controller-manager \\
   --address=0.0.0.0 \\
-  --cluster-cidr=192.168.5.0/24 \\
+  --cluster-cidr=10.0.0.0/25 \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.crt \\
   --cluster-signing-key-file=/var/lib/kubernetes/ca.key \\
@@ -257,10 +261,17 @@ Login to `loadbalancer` instance using SSH Terminal.
 sudo apt-get update && sudo apt-get install -y haproxy
 ```
 
+Get IP addresses:
+```
+MASTER_1_ADDRESS=$(host master-1 | cut -d" " -f4)
+MASTER_2_ADDRESS=$(host master-2 | cut -d" " -f4)
+LOADBALANCER_ADDRESS=$(host loadbalancer | cut -d" " -f4)
+```
+
 ```
 cat <<EOF | sudo tee /etc/haproxy/haproxy.cfg 
 frontend kubernetes
-    bind 192.168.5.30:6443
+    bind ${LOADBALANCER_ADDRESS}:6443
     option tcplog
     mode tcp
     default_backend kubernetes-master-nodes
@@ -269,8 +280,8 @@ backend kubernetes-master-nodes
     mode tcp
     balance roundrobin
     option tcp-check
-    server master-1 192.168.5.11:6443 check fall 3 rise 2
-    server master-2 192.168.5.12:6443 check fall 3 rise 2
+    server master-1 ${MASTER_1_ADDRESS}:6443 check fall 3 rise 2
+    server master-2 ${MASTER_2_ADDRESS}:6443 check fall 3 rise 2
 EOF
 ```
 
@@ -283,7 +294,7 @@ sudo service haproxy restart
 Make a HTTP request for the Kubernetes version info:
 
 ```
-curl  https://192.168.5.30:6443/version -k
+curl  https://${LOADBALANCER_ADDRESS}:6443/version -k
 ```
 
 > output
@@ -292,7 +303,7 @@ curl  https://192.168.5.30:6443/version -k
 {
   "major": "1",
   "minor": "23",
-  "gitVersion": "v1.23.4",
+  "gitVersion": "v1.23.5",
   "gitCommit": "e6c093d87ea4cbb530a7b2ae91e54c0842d8308a",
   "gitTreeState": "clean",
   "buildDate": "2022-02-16T12:32:02Z",

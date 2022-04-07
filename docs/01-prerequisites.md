@@ -3,35 +3,17 @@ Previous: [Readme](../README.md)
 # Prerequisites
 
 ## Some experience
-Nice to have: Some hands-on experience with VirtualBox and Vagrant.
+Nice to have: Some hands-on experience with Azure, Azure networking and azure deployment templates (ARM).
 If you do not have you can get some while moving through this tutorial.
 
-## VM Hardware Requirements
+## Azure Cloud Requirements
 
-8 GB of RAM (Preferably 16 GB)
-50 GB Disk space
+- Active Azure subscription. You can use a free one but default sizes of VMs were not availble for me while testing.
+- 5 VMs, 5 public IP addresses, virtual network, storage account, file share will be created by default.
+- If you use default sizes of VMs the cost should be lower then 2 EUR for 24 hours (or 0.7 EUR if you stop your testing after business hours).
+- The chart below shows the cost estimation after several days of testing (about 1-2 hours per day of active resources).
 
-## Virtual Box
-
-Download and Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) on any one of the supported platforms:
-
- - Windows hosts (I have tested on Windows 10 + Virtualbox 6.1.32)
- - OS X hosts
- - Linux distributions
- - Solaris hosts
-
-## Vagrant
-
-Once VirtualBox is installed you may chose to deploy virtual machines manually on it.
-Vagrant provides an easier way to deploy multiple virtual machines on VirtualBox more consistenlty.
-
-Download and Install [Vagrant](https://www.vagrantup.com/) on your platform.
-
-- Windows
-- Debian
-- Centos
-- Linux
-- macOS
+![Cost forcast](./docs/images/azure_cost_forcast.png)
 
 Next: [Compute resources](02-compute-resources.md)
 

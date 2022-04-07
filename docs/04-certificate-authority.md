@@ -144,6 +144,13 @@ The kube-apiserver certificate requires all names that various components may re
 
 The `openssl` command cannot take alternate names as command line parameter. So we must create a `conf` file for it:
 
+Get IP addresses of your VMs:
+```
+MASTER_1_ADDRESS=$(host master-1 | cut -d" " -f4)
+MASTER_2_ADDRESS=$(host master-2 | cut -d" " -f4)
+LOADBALANCER_ADDRESS=$(host loadbalancer | cut -d" " -f4)
+```
+
 ```
 cat > openssl.cnf <<EOF
 [req]
@@ -160,9 +167,9 @@ DNS.2 = kubernetes.default
 DNS.3 = kubernetes.default.svc
 DNS.4 = kubernetes.default.svc.cluster.local
 IP.1 = 10.96.0.1
-IP.2 = 192.168.5.11
-IP.3 = 192.168.5.12
-IP.4 = 192.168.5.30
+IP.2 = ${MASTER_1_ADDRESS}
+IP.3 = ${MASTER_2_ADDRESS}
+IP.4 = ${LOADBALANCER_ADDRESS}
 IP.5 = 127.0.0.1
 EOF
 ```
@@ -199,8 +206,8 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
-IP.1 = 192.168.5.11
-IP.2 = 192.168.5.12
+IP.1 = ${MASTER_1_ADDRESS}
+IP.2 = ${MASTER_2_ADDRESS}
 IP.3 = 127.0.0.1
 EOF
 ```

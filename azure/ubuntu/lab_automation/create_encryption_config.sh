@@ -1,5 +1,6 @@
 #!/bin/bash
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 
@@ -23,9 +24,9 @@ mkdir -p /var/lib/kubernetes/
 if [ "$HOSTNAME" == "master-1" ]
 then
     cp /tmp/encryption-config.yaml $HOME/
-    cp /tmp/encryption-config.yaml /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/
+    cp /tmp/encryption-config.yaml /mnt/k8s-share/azure/ubuntu/lab_automation/CA/
     exit 0
 fi
 
 # if on all other nodes then copy from shared folder
-cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/CA/encryption-config.yaml $HOME/
+cp /mnt/k8s-share/azure/ubuntu/lab_automation/CA/encryption-config.yaml $HOME/

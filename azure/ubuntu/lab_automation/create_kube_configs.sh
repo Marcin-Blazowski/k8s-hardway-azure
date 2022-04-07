@@ -1,5 +1,6 @@
 #!/bin/bash
 HOSTNAME=$(hostname -s)
+export HOME=~
 
 cd $HOME
 
@@ -140,8 +141,8 @@ then
     kubectl config use-context default --kubeconfig=worker-2.kubeconfig
   }
 
-  mkdir -p /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/kube_configs
-  cp *.kubeconfig /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/kube_configs/
+  mkdir -p /mnt/k8s-share/azure/ubuntu/lab_automation/kube_configs
+  cp *.kubeconfig /mnt/k8s-share/azure/ubuntu/lab_automation/kube_configs/
 
   exit 0
 fi
@@ -149,15 +150,15 @@ fi
 # Copy the appropriate kube-proxy kubeconfig files to each worker instance:
 if [[ "$HOSTNAME" =~ worker-[0-9]* ]]
 then
-  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/kube_configs/kube-proxy.kubeconfig $HOME/
-  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/kube_configs/worker-1.kubeconfig $HOME/
-  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/kube_configs/worker-2.kubeconfig $HOME/
+  cp /mnt/k8s-share/azure/ubuntu/lab_automation/kube_configs/kube-proxy.kubeconfig $HOME/
+  cp /mnt/k8s-share/azure/ubuntu/lab_automation/kube_configs/worker-1.kubeconfig $HOME/
+  cp /mnt/k8s-share/azure/ubuntu/lab_automation/kube_configs/worker-2.kubeconfig $HOME/
   exit 0
 fi
 
 # Copy the appropriate admin.kubeconfig, kube-controller-manager and kube-scheduler kubeconfig files to each controller instance:
 if [[ "$HOSTNAME" =~ master-[2-9]* ]]
 then
-  cp /tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/kube_configs/*.kubeconfig $HOME/
+  cp /mnt/k8s-share/azure/ubuntu/lab_automation/kube_configs/*.kubeconfig $HOME/
   exit 0
 fi

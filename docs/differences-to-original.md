@@ -1,5 +1,15 @@
 # Differences between original and this solution
 
+### 1. Compute resources are provisioned on Azure cloud.
+
+1. Automation for resources provisioning on Azure cloud added (ARM template).
+
+2. Automation to provision the whole up and running cluster added: [Lab Automation](./docs/16-lab-automation.md).
+
+3. Minor grammar and content fixes to meet Azure Cloud deployment constraints and requirements.
+
+
+## Differences between my 1st version of this guide for VirutalBox and Vagrant
 Original: [Kubernetes the hard way on Vagrant](https://github.com/mmumshad/kubernetes-the-hard-way)
 
 ### 1. Latest versions (dynamic) of k8s components are installed.
@@ -31,6 +41,7 @@ Original: [Kubernetes the hard way on Vagrant](https://github.com/mmumshad/kuber
 14. Dynamic kubelet configuration lab removed.
 14. E2E tests removed.
 16. Some not needed files removed.
+
 
 ## Differences between Mumshad's and Kelsey's solution
 

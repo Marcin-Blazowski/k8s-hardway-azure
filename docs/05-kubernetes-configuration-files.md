@@ -172,6 +172,8 @@ for instance in worker-1 worker-2; do
 done
 ```
 
+In case you have some problems with SSH authentication you can use shared folder /mnt/k8s-share.
+
 Copy the appropriate `admin.kubeconfig`, `kube-controller-manager` and `kube-scheduler` kubeconfig files to each controller instance:
 
 ```

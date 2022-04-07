@@ -2,22 +2,19 @@ Previous: [Smoke Test](15-smoke-test.md)
 
 # Lab automation
 
-If you have some problems with labs and you want to make sure that it is going to work you can provision the whole kubernetes cluster automatically. I created a dedicated Vagrantfile to do this.
+If you have some problems with labs and you want to make sure that it is going to work you can provision the whole kubernetes cluster automatically. I created a dedicated ARM template to do this.
 
-Steps below are for Windows hosts but you can tune this for Linux.
+- Click the button below to deploy ARM template on your Azure cloud. Use CTRL + Click to open in a new tab.
 
-1. Create a backup copy of your Vagrantfile
-`copy Vagrantfile Vagrantfile.backup`
+[![Deploy To Azure](../docs/images/deploy-to-azure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMarcin-Blazowski%2Fk8s-hardway-azure%2Fmain%2Fazure%2Fazuredeploy-k8s-hardway-automation.json)
 
-2. Overwrite Vagrantfile with the lab automation one
-`copy Vagrantfile.auto Vagrantfile`
+- Fill parameters form the same way as described in [Compute resources](02-compute-resources.md).
 
-3. Trigger VMs provisioning by Vagrant
-`vagrant up`
+- You should get the k8s cluster running on 5 VMs. You can review it is up and running by executing smoke tests on master-1 or worker-2 nodes: [Smoke Test](15-smoke-test.md).
 
-You should get 5 VMs created with the k8s cluster provisioned by shell scripts.
-The last step which should be also completed is responsible for smoke tests execution. Please review `vagrant up` output log.
+You should get 5 VMs created with the k8s cluster provisioned by shell scripts. You can review scripts here [Automation scripts](../azure/ubuntu/azure/). "*automation-wrapper.sh" are the ones you are looking for.
 
-You can also compare with the log stored [here](/tmp/k8s-hardway-azure/azure/ubuntu/lab_automation/log/k8s-hard-way-vagrant-up-20220309.log).
+## Do not forget to clean up your Azure resources.
+Clean up resources: [Delete Azure cloud resources](../docs/clean-up.md)
 
 Previous: [Smoke Test](15-smoke-test.md)

@@ -45,7 +45,9 @@ cp /tmp/etcd-${ETCD_VER}-linux-amd64/etcd* /usr/local/bin/
 The instance internal IP address will be used to serve client requests and communicate with etcd cluster peers. Retrieve the internal IP address of the master(etcd) nodes:
 
 ```
-INTERNAL_IP=$(ip addr show enp0s8 | grep "inet " | awk '{print $2}' | cut -d / -f 1)
+INTERNAL_IP=$(ip addr show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f 1)
+MASTER_1_ADDRESS=$(host master-1 | cut -d" " -f4)
+MASTER_2_ADDRESS=$(host master-2 | cut -d" " -f4)
 ```
 
 Each etcd member must have a unique name within an etcd cluster. Set the etcd name to match the hostname of the current compute instance:
@@ -78,7 +80,7 @@ ExecStart=/usr/local/bin/etcd \\
   --listen-client-urls https://${INTERNAL_IP}:2379,https://127.0.0.1:2379 \\
   --advertise-client-urls https://${INTERNAL_IP}:2379 \\
   --initial-cluster-token etcd-cluster-0 \\
-  --initial-cluster master-1=https://192.168.5.11:2380,master-2=https://192.168.5.12:2380 \\
+  --initial-cluster master-1=https://${MASTER_1_ADDRESS}:2380,master-2=https://${MASTER_2_ADDRESS}:2380 \\
   --initial-cluster-state new \\
   --data-dir=/var/lib/etcd
 Restart=on-failure
@@ -116,8 +118,8 @@ sudo ETCDCTL_API=3 etcdctl member list \
 > output
 
 ```
-45bf9ccad8d8900a, started, master-2, https://192.168.5.12:2380, https://192.168.5.12:2379
-54a5796a6803f252, started, master-1, https://192.168.5.11:2380, https://192.168.5.11:2379
+45bf9ccad8d8900a, started, master-2, https://10.0.0.6:2380, https://10.0.0.6:2379
+54a5796a6803f252, started, master-1, https://10.0.0.5:2380, https://10.0.0.5:2379
 ```
 
 Reference: https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#starting-etcd-clusters

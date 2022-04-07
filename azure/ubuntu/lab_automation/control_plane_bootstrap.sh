@@ -1,4 +1,5 @@
 #!/bin/bash
+export HOME=~
 
 sudo mkdir -p /etc/kubernetes/config
 # Download binaries
@@ -34,8 +35,8 @@ cd /tmp
 }
 
 INTERNAL_IP=$(ip addr show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f 1)
-MASTER-1_ADDRESS=$(host master-1 | cut -d" " -f4)
-MASTER-2_ADDRESS=$(host master-2 | cut -d" " -f4)
+MASTER_1_ADDRESS=$(host master-1 | cut -d" " -f4)
+MASTER_2_ADDRESS=$(host master-2 | cut -d" " -f4)
 
 cat <<EOF | sudo tee /etc/systemd/system/kube-apiserver.service
 [Unit]
@@ -60,7 +61,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --etcd-cafile=/var/lib/kubernetes/ca.crt \\
   --etcd-certfile=/var/lib/kubernetes/etcd-server.crt \\
   --etcd-keyfile=/var/lib/kubernetes/etcd-server.key \\
-  --etcd-servers=https://${MASTER-1_ADDRESS}:2379,https://${MASTER-2_ADDRESS}:2379 \\
+  --etcd-servers=https://${MASTER_1_ADDRESS}:2379,https://${MASTER_2_ADDRESS}:2379 \\
   --event-ttl=1h \\
   --encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.crt \\
