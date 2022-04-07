@@ -37,7 +37,12 @@ Kubernetes The Hard Way guides you through bootstrapping a highly available Kube
 
 ## Architecture Overview
 
-![Architecture_Overview](./docs/images/architecture_overview.drawio.png)
+![Architecture_Overview](./docs/images/architecture_overview_azure.drawio.png)
+
+## Azure Resources
+
+![Azure Resources](./docs/images/azure_resources.png)
+
 
 ## Labs
 

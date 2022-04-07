@@ -1,4 +1,4 @@
-Previous: [Prerequisites](docs/01-prerequisites.md)
+Home: [README.md](../README.md)
 
 # Clean-up Azure Resources
 
