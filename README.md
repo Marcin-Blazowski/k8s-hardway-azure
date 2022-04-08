@@ -1,12 +1,14 @@
 > This tutorial is a modified version of the original developed by [Mumshad Mannambeth](https://github.com/mmumshad/kubernetes-the-hard-way) who started from [Kelsey Hightower](https://github.com/kelseyhightower/kubernetes-the-hard-way) repository.
 
-If you prefer "private cloud" on your laptop you can use another tutorial prepared by me to be run on VirtualBox with the help of Vagrant: [K8s hard way on VirtualBox](https://github.com/Marcin-Blazowski/k8s-hardway-vagrant)
 
 # Kubernetes The Hard Way On Azure Cloud
 
 This tutorial walks you through setting up Kubernetes the hard way on Azure cloud.
-This guide is not for people looking for a fully automated command to bring up a Kubernetes cluster. Anyway the automation is provided: [Lab Automation](./docs/16-lab-automation.md).
-The are for sure better ways to build the cluster. Please check out [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine), or the [Getting Started Guides](http://kubernetes.io/docs/getting-started-guides/).
+This guide is not for people looking for a fully automated command to bring up a Kubernetes cluster, anyway the automation is provided: [Lab Automation](./docs/16-lab-automation.md).
+
+If you prefer "private cloud" on your laptop you can use another tutorial prepared by me to be run on VirtualBox with the help of Vagrant: [K8s hard way on VirtualBox](https://github.com/Marcin-Blazowski/k8s-hardway-vagrant).
+
+There are, for sure, better ways to build the cluster. Please check out [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine), or the [Getting Started Guides](http://kubernetes.io/docs/getting-started-guides/).
 
 ### Kubernetes The Hard Way is optimized for learning, which means taking the long route to ensure you understand each task required to bootstrap a Kubernetes cluster.
 
