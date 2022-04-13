@@ -4,9 +4,9 @@
 # Kubernetes The Hard Way On Azure Cloud
 
 This tutorial walks you through setting up Kubernetes the hard way on Azure cloud.
-This guide is not for people looking for a fully automated command to bring up a Kubernetes cluster, anyway the automation is provided: [Lab Automation](./docs/16-lab-automation.md).
+This guide is not for people looking for a fully automated command to bring up a Kubernetes cluster, however, the automation is provided: [Lab Automation](./docs/16-lab-automation.md).
 
-If you prefer "private cloud" on your laptop you can use another tutorial prepared by me to be run on VirtualBox with the help of Vagrant: [K8s hard way on VirtualBox](https://github.com/Marcin-Blazowski/k8s-hardway-vagrant).
+If you prefer "private cloud" on your laptop, you can use another tutorial prepared by me to be run on VirtualBox with the help of Vagrant: [K8s hard way on VirtualBox](https://github.com/Marcin-Blazowski/k8s-hardway-vagrant).
 
 There are, for sure, better ways to build the cluster. Please check out [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine), or the [Getting Started Guides](http://kubernetes.io/docs/getting-started-guides/).
 
