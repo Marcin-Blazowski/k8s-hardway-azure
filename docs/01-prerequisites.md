@@ -13,7 +13,7 @@ If you do not have you can get some while moving through this tutorial.
 - If you use default sizes of VMs the cost should be lower then 2 EUR for 24 hours (or 0.7 EUR if you stop your testing after business hours).
 - The chart below shows the cost estimation after several days of testing (about 1-2 hours per day of active resources).
 
-![Cost forcast](./docs/images/azure_cost_forcast.png)
+![Cost forcast](images/azure_cost_forcast.png)
 
 Next: [Compute resources](02-compute-resources.md)
 
